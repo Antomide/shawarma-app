@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -8,48 +7,17 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap');
-
-  :root {
-    --bg: #16110d;
-    --bg-soft: #1e1813;
-    --card: #241c16;
-    --card-hover: #2c221a;
-    --ember: #ff5a1f;
-    --ember-bright: #ff7a3d;
-    --smoke: #8a7d70;
-    --paper: #f5ede1;
-    --line: #352a20;
-    --success: #5fb87a;
-  }
-
+  :root { --bg: #16110d; --bg-soft: #1e1813; --card: #241c16; --card-hover: #2c221a; --ember: #ff5a1f; --ember-bright: #ff7a3d; --smoke: #8a7d70; --paper: #f5ede1; --line: #352a20; --success: #5fb87a; }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    background: var(--bg);
-    background-image:
-      radial-gradient(ellipse 600px 400px at 20% -10%, rgba(255,90,31,0.12), transparent),
-      radial-gradient(ellipse 500px 300px at 100% 20%, rgba(255,90,31,0.06), transparent);
-    color: var(--paper);
-    font-family: 'Manrope', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
+  body { background: var(--bg); background-image: radial-gradient(ellipse 600px 400px at 20% -10%, rgba(255,90,31,0.12), transparent), radial-gradient(ellipse 500px 300px at 100% 20%, rgba(255,90,31,0.06), transparent); color: var(--paper); font-family: 'Manrope', sans-serif; min-height: 100vh; overflow-x: hidden; }
   .screen { display: none; min-height: 100vh; padding-bottom: 100px; }
   .screen.active { display: block; animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-  .hero {
-    position: relative;
-    padding: 28px 20px 22px;
-    background: linear-gradient(180deg, rgba(255,90,31,0.1), transparent);
-    border-bottom: 1px solid var(--line);
-  }
+  .hero { position: relative; padding: 28px 20px 22px; background: linear-gradient(180deg, rgba(255,90,31,0.1), transparent); border-bottom: 1px solid var(--line); }
   .hero-eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ember-bright); font-weight: 700; margin-bottom: 6px; }
-  .hero-title { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 30px; line-height: 1.05; letter-spacing: -0.01em; }
+  .hero-title { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 30px; line-height: 1.05; }
   .hero-title span { color: var(--ember); }
   .hero-sub { color: var(--smoke); font-size: 14px; margin-top: 8px; }
-
   .loc-list { padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; }
   .loc-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.1s; }
   .loc-card:active { transform: scale(0.985); }
@@ -60,14 +28,28 @@
   .loc-addr { color: var(--smoke); font-size: 13px; }
   .loc-meta { display: flex; gap: 10px; margin-top: 6px; font-size: 12px; color: var(--smoke); }
   .loc-meta b { color: var(--ember-bright); }
-  .loc-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
+  .loc-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
   .loc-card.selected .loc-check { background: var(--ember); border-color: var(--ember); }
-
+  .view-switch { display: flex; gap: 6px; padding: 0 16px 16px; }
+  .view-switch-btn { flex: 1; padding: 11px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); color: var(--smoke); font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
+  .view-switch-btn.active { background: var(--ember); color: var(--bg); border-color: var(--ember); }
+  .map-wrap { padding: 0 16px 18px; }
+  .map-canvas { position: relative; width: 100%; height: 220px; border-radius: 18px; background: linear-gradient(135deg, #1c2a1e, #16201a); border: 1px solid var(--line); overflow: hidden; margin-bottom: 14px; }
+  .map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 28px 28px; }
+  .map-you { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #3a8aff; border: 3px solid #16110d; box-shadow: 0 0 0 6px rgba(58,138,255,0.25); transform: translate(-50%, -50%); z-index: 5; }
+  .map-pin { position: absolute; transform: translate(-50%, -100%); cursor: pointer; z-index: 4; display: flex; flex-direction: column; align-items: center; }
+  .map-pin-icon { width: 30px; height: 30px; border-radius: 50% 50% 50% 0; background: var(--ember); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); border: 2px solid var(--bg); }
+  .map-pin-icon span { transform: rotate(45deg); font-size: 13px; }
+  .map-list { display: flex; flex-direction: column; gap: 10px; }
+  .map-loc-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .map-dist-badge { background: var(--bg-soft); color: var(--ember-bright); font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 10px; flex-shrink: 0; text-align: center; min-width: 56px; }
+  .map-dist-badge .unit { font-size: 10px; color: var(--smoke); font-weight: 600; display: block; }
+  .geo-banner { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 12.5px; color: var(--smoke); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .geo-banner button { background: var(--ember); color: var(--bg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
   .tabs { display: flex; gap: 8px; padding: 14px 16px 4px; overflow-x: auto; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { flex-shrink: 0; padding: 9px 16px; border-radius: 100px; background: var(--card); border: 1px solid var(--line); color: var(--smoke); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
   .tab.active { background: var(--ember); color: var(--bg); border-color: var(--ember); }
-
   .menu-section { padding: 6px 16px 0; }
   .section-label { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--smoke); margin: 18px 4px 10px; }
   .item-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; display: flex; gap: 12px; margin-bottom: 10px; transition: border-color 0.15s; }
@@ -78,22 +60,18 @@
   .item-desc { color: var(--smoke); font-size: 12.5px; line-height: 1.4; margin-bottom: 8px; }
   .item-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
   .item-price { font-weight: 700; font-size: 15px; color: var(--ember-bright); }
-  .stepper { display: flex; align-items: center; gap: 0; }
-  .step-btn { width: 30px; height: 30px; border-radius: 9px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--paper); font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; user-select: none; }
+  .stepper { display: flex; align-items: center; }
+  .step-btn { width: 30px; height: 30px; border-radius: 9px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--paper); font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
   .step-btn.plus { background: var(--ember); border-color: var(--ember); color: var(--bg); }
-  .step-btn:active { transform: scale(0.9); }
   .step-val { width: 28px; text-align: center; font-weight: 700; font-size: 14px; }
   .add-btn { padding: 7px 16px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--ember-bright); font-size: 13px; font-weight: 700; cursor: pointer; }
-
   .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 16px calc(16px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, var(--bg) 30%); display: none; z-index: 50; }
   .cart-bar.visible { display: block; }
   .cart-btn { background: var(--ember); color: var(--bg); border: none; border-radius: 16px; padding: 16px 20px; width: 100%; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 8px 24px rgba(255,90,31,0.35); }
   .cart-btn-count { background: rgba(0,0,0,0.18); border-radius: 8px; padding: 3px 9px; font-size: 13px; }
-
   .checkout-wrap { padding: 18px 16px; }
   .summary-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
   .summary-loc { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--smoke); }
-  .summary-loc b { color: var(--paper); font-size: 14px; }
   .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; }
   .cart-row-name { font-size: 14px; flex: 1; }
   .cart-row-qty { color: var(--smoke); font-size: 13px; margin: 0 10px; }
@@ -101,10 +79,8 @@
   .cart-row-remove { width: 22px; height: 22px; border-radius: 50%; background: var(--bg-soft); color: var(--smoke); border: none; font-size: 13px; margin-left: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .total-row { display: flex; justify-content: space-between; padding-top: 14px; margin-top: 6px; border-top: 1px solid var(--line); font-family: 'Unbounded', sans-serif; font-size: 17px; font-weight: 700; }
   .total-row span:last-child { color: var(--ember-bright); }
-
   .confirm-btn { width: 100%; padding: 17px; border: none; border-radius: 16px; background: var(--ember); color: var(--bg); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 8px 24px rgba(255,90,31,0.35); }
   .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--smoke); font-size: 13px; font-weight: 600; padding: 16px; cursor: pointer; }
-
   .success-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 60px 24px 24px; }
   .success-icon { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, var(--success), #3d8f56); display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 22px; box-shadow: 0 12px 32px rgba(95,184,122,0.3); }
   .success-title { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
@@ -115,26 +91,6 @@
   .order-detail-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; width: 100%; text-align: left; margin-bottom: 24px; font-size: 13px; color: var(--smoke); }
   .order-detail-card b { color: var(--paper); }
   .new-order-btn { width: 100%; padding: 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); color: var(--paper); font-weight: 700; font-size: 14px; cursor: pointer; }
-
-  .view-switch { display: flex; gap: 6px; padding: 0 16px 16px; }
-  .view-switch-btn { flex: 1; padding: 11px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); color: var(--smoke); font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
-  .view-switch-btn.active { background: var(--ember); color: var(--bg); border-color: var(--ember); }
-
-  .map-wrap { padding: 0 16px 18px; }
-  .map-canvas { position: relative; width: 100%; height: 220px; border-radius: 18px; background: linear-gradient(135deg, #1c2a1e, #16201a); border: 1px solid var(--line); overflow: hidden; margin-bottom: 14px; }
-  .map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 28px 28px; }
-  .map-you { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #3a8aff; border: 3px solid #16110d; box-shadow: 0 0 0 6px rgba(58,138,255,0.25); transform: translate(-50%, -50%); z-index: 5; }
-  .map-pin { position: absolute; transform: translate(-50%, -100%); cursor: pointer; z-index: 4; display: flex; flex-direction: column; align-items: center; }
-  .map-pin-icon { width: 30px; height: 30px; border-radius: 50% 50% 50% 0; background: var(--ember); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); border: 2px solid var(--bg); }
-  .map-pin-icon span { transform: rotate(45deg); font-size: 13px; }
-  .map-pin.selected .map-pin-icon { background: #3a8aff; }
-  .map-list { display: flex; flex-direction: column; gap: 10px; }
-  .map-loc-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-  .map-loc-card.selected { border-color: var(--ember); background: var(--card-hover); }
-  .map-dist-badge { background: var(--bg-soft); color: var(--ember-bright); font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 10px; flex-shrink: 0; text-align: center; min-width: 56px; }
-  .map-dist-badge .unit { font-size: 10px; color: var(--smoke); font-weight: 600; display: block; }
-  .geo-banner { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 12.5px; color: var(--smoke); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-  .geo-banner button { background: var(--ember); color: var(--bg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -228,13 +184,10 @@ async function loadLocationsFromServer() {
     if (!res.ok) throw new Error('bad response');
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) LOCATIONS = data;
-  } catch (e) {
-    console.warn('Используем дефолтные точки', e);
-  }
+  } catch(e) { console.warn('Используем дефолтные точки', e); }
 }
 
 const CATEGORIES = ["Все", "Шаурма", "Добавки", "Напитки"];
-
 const MENU = [
   { id: 1, category: "Шаурма", name: "Классическая", desc: "Курица, свежие овощи, фирменный соус", price: 280, icon: "🌯" },
   { id: 2, category: "Шаурма", name: "Острая", desc: "Курица, перец халапеньо, острый соус", price: 290, icon: "🌶️" },
@@ -265,8 +218,7 @@ function renderLocations() {
         <div class="loc-meta"><span>⏰ ${loc.hours}</span><span>⚡ <b>${loc.wait}</b></span></div>
       </div>
       <div class="loc-check"></div>
-    </div>
-  `).join('');
+    </div>`).join('');
   wrap.querySelectorAll('.loc-card').forEach(card => {
     card.addEventListener('click', () => {
       state.location = LOCATIONS.find(l => l.id === parseInt(card.dataset.id));
@@ -279,9 +231,7 @@ function renderLocations() {
 
 function openMenu() {
   document.getElementById('menuLocName').textContent = "📍 " + state.location.name;
-  renderTabs();
-  renderMenuItems();
-  updateCartBar();
+  renderTabs(); renderMenuItems(); updateCartBar();
   showScreen('screen-menu');
 }
 
@@ -321,23 +271,19 @@ function changeQty(id, delta) {
   const next = Math.max(0, (state.cart[id] || 0) + delta);
   if (next === 0) delete state.cart[id]; else state.cart[id] = next;
   tg?.HapticFeedback?.impactOccurred('light');
-  renderMenuItems();
-  updateCartBar();
+  renderMenuItems(); updateCartBar();
 }
 
 function cartTotal() { return Object.entries(state.cart).reduce((sum, [id, qty]) => sum + MENU.find(m => m.id == id).price * qty, 0); }
 function cartCount() { return Object.values(state.cart).reduce((a, b) => a + b, 0); }
 
 function updateCartBar() {
-  const count = cartCount();
-  const bar = document.getElementById('cartBar');
+  const count = cartCount(), bar = document.getElementById('cartBar');
   if (count > 0) { bar.classList.add('visible'); document.getElementById('cartBtnCount').textContent = `${count} шт · ${cartTotal()}₽`; }
   else bar.classList.remove('visible');
 }
 
-document.getElementById('cartBtn').addEventListener('click', openCheckout);
-
-function openCheckout() {
+document.getElementById('cartBtn').addEventListener('click', () => {
   document.getElementById('checkoutLocName').textContent = state.location.name + ", " + state.location.addr;
   const rows = document.getElementById('cartRows');
   rows.innerHTML = Object.entries(state.cart).map(([id, qty]) => {
@@ -347,15 +293,16 @@ function openCheckout() {
   rows.querySelectorAll('.cart-row-remove').forEach(btn => {
     btn.addEventListener('click', () => {
       delete state.cart[btn.dataset.id];
-      if (cartCount() === 0) { showScreen('screen-menu'); renderMenuItems(); updateCartBar(); } else openCheckout();
+      if (cartCount() === 0) { showScreen('screen-menu'); renderMenuItems(); updateCartBar(); }
+      else document.getElementById('cartBtn').click();
     });
   });
   document.getElementById('totalPrice').textContent = cartTotal() + '₽';
   showScreen('screen-checkout');
-}
+});
 
 document.getElementById('backToMenu').addEventListener('click', () => { showScreen('screen-menu'); renderMenuItems(); });
-document.getElementById('backToLocations').addEventListener('click', () => { state.cart = {}; showScreen('screen-locations'); });
+document.getElementById('backToLocations').addEventListener('click', () => { state.cart = {}; updateCartBar(); showScreen('screen-locations'); });
 
 document.getElementById('confirmBtn').addEventListener('click', async () => {
   const orderNum = 'SH-' + Math.floor(1000 + Math.random() * 9000);
@@ -363,18 +310,20 @@ document.getElementById('confirmBtn').addEventListener('click', async () => {
   document.getElementById('successLocName').textContent = state.location.name;
   document.getElementById('successWait').textContent = state.location.wait;
   try {
-    await fetch('/api/orders', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ order_number: orderNum, location_name: state.location.name, items: Object.entries(state.cart).map(([id, qty]) => { const item = MENU.find(m => m.id == id); return { name: item.name, qty, price: item.price }; }), total: cartTotal(), telegram_user_id: tg?.initDataUnsafe?.user?.id?.toString() || null })
-    });
-  } catch (e) { console.warn('Ошибка сохранения заказа', e); }
+    await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_number: orderNum, location_name: state.location.name,
+        items: Object.entries(state.cart).map(([id, qty]) => { const item = MENU.find(m => m.id == id); return { name: item.name, qty, price: item.price }; }),
+        total: cartTotal(), telegram_user_id: tg?.initDataUnsafe?.user?.id?.toString() || null }) });
+  } catch(e) { console.warn('Ошибка сохранения заказа', e); }
   if (tg) { tg.MainButton?.hide(); tg.HapticFeedback?.notificationOccurred('success'); }
-  state.cart = {};
-  updateCartBar();
+  state.cart = {}; updateCartBar();
   showScreen('screen-success');
 });
 
-document.getElementById('newOrderBtn').addEventListener('click', () => { state = { location: null, cart: {}, activeTab: "Все", userLocation: null }; showScreen('screen-locations'); });
+document.getElementById('newOrderBtn').addEventListener('click', () => {
+  state = { location: null, cart: {}, activeTab: "Все", userLocation: null };
+  showScreen('screen-locations');
+});
 
 document.getElementById('viewListBtn').addEventListener('click', () => {
   document.getElementById('viewListBtn').classList.add('active');
@@ -401,7 +350,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
 
 function distanceKm(lat1, lng1, lat2, lng2) {
   const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
-  return R * 2 * Math.atan2(Math.sqrt(Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2), Math.sqrt(1-(Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2)));
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function renderMap() {
