@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админка — ШаурмаБот</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&display=swap');
+  :root { --bg: #16110d; --bg-soft: #1e1813; --card: #241c16; --ember: #ff5a1f; --ember-bright: #ff7a3d; --smoke: #8a7d70; --paper: #f5ede1; --line: #352a20; --success: #5fb87a; --danger: #e2554a; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--paper); font-family: 'Manrope', sans-serif; min-height: 100vh; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 80px; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .title-block .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ember-bright); font-weight: 700; margin-bottom: 6px; }
+  .title-block h1 { font-family: 'Unbounded', sans-serif; font-size: 26px; font-weight: 900; }
+  .title-block h1 span { color: var(--ember); }
+  .demo-note { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 24px; font-size: 13px; color: var(--smoke); line-height: 1.5; }
+  .demo-note b { color: var(--paper); }
+  .add-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 24px; }
+  .add-card h2 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  label { font-size: 12px; color: var(--smoke); display: block; margin-bottom: 5px; font-weight: 600; }
+  input { width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--paper); font-family: 'Manrope', sans-serif; font-size: 14px; }
+  input:focus { outline: none; border-color: var(--ember); }
+  .geo-row { display: flex; gap: 8px; align-items: flex-end; }
+  .geo-row > div { flex: 1; }
+  .btn-geo { padding: 10px 14px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--ember-bright); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .btn-primary { width: 100%; padding: 13px; border-radius: 12px; border: none; background: var(--ember); color: var(--bg); font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 6px; }
+  .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .list-header h2 { font-size: 15px; font-weight: 700; }
+  .count-badge { background: var(--card); color: var(--smoke); font-size: 12px; padding: 4px 10px; border-radius: 8px; }
+  .loc-row { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+  .loc-row-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--ember), #c9390f); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .loc-row-info { flex: 1; min-width: 0; }
+  .loc-row-name { font-weight: 700; font-size: 14.5px; }
+  .loc-row-addr { color: var(--smoke); font-size: 12.5px; margin-top: 2px; }
+  .loc-row-meta { color: var(--smoke); font-size: 11.5px; margin-top: 4px; }
+  .loc-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-icon { width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg-soft); color: var(--smoke); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .btn-icon.delete:hover { border-color: var(--danger); color: var(--danger); }
+  .empty { text-align: center; padding: 50px 20px; color: var(--smoke); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--success); color: #0d2913; font-weight: 700; font-size: 13px; padding: 12px 20px; border-radius: 12px; transition: transform 0.25s ease; z-index: 100; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <div class="title-block">
+      <div class="eyebrow">Админ-панель</div>
+      <h1>Точки <span>самовывоза</span></h1>
+    </div>
+  </div>
+  <div class="demo-note">Точки хранятся на сервере и сразу видны <b>всем пользователям бота</b>. Изменения применяются мгновенно.</div>
+  <div class="add-card">
+    <h2>➕ Добавить точку</h2>
+    <div class="form-grid">
+      <div><label>Название</label><input type="text" id="fName" placeholder="ТЦ Галерея"></div>
+      <div><label>Адрес</label><input type="text" id="fAddr" placeholder="ул. Ленина, 12"></div>
+    </div>
+    <div class="form-grid">
+      <div><label>Часы работы</label><input type="text" id="fHours" placeholder="10:00–22:00"></div>
+      <div><label>Время готовности</label><input type="text" id="fWait" placeholder="~10 мин"></div>
+    </div>
+    <div class="form-grid full">
+      <div class="geo-row">
+        <div><label>Широта (lat)</label><input type="text" id="fLat" placeholder="55.7558"></div>
+        <div><label>Долгота (lng)</label><input type="text" id="fLng" placeholder="37.6173"></div>
+        <button class="btn-geo" id="useMyLocation">📍 Моё место</button>
+      </div>
+    </div>
+    <button class="btn-primary" id="addBtn">Добавить точку</button>
+  </div>
+  <div class="list-header"><h2>Все точки</h2><div class="count-badge" id="countBadge">0</div></div>
+  <div id="locList"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let locations = [];
+
+async function loadLocations() {
+  try {
+    const res = await fetch('/api/locations');
+    locations = await res.json();
+  } catch (e) {
+    showToast('Не удалось загрузить точки с сервера');
+    locations = [];
+  }
+  render();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function render() {
+  const wrap = document.getElementById('locList');
+  document.getElementById('countBadge').textContent = locations.length;
+  if (locations.length === 0) { wrap.innerHTML = `<div class="empty">Пока нет ни одной точки.<br>Добавь первую выше 👆</div>`; return; }
+  wrap.innerHTML = locations.map(loc => `
+    <div class="loc-row">
+      <div class="loc-row-icon">📍</div>
+      <div class="loc-row-info">
+        <div class="loc-row-name">${loc.name}</div>
+        <div class="loc-row-addr">${loc.addr}</div>
+        <div class="loc-row-meta">⏰ ${loc.hours} · ⚡ ${loc.wait} · 📐 ${loc.lat}, ${loc.lng}</div>
+      </div>
+      <div class="loc-row-actions"><button class="btn-icon delete" data-id="${loc.id}">✕</button></div>
+    </div>`).join('');
+  wrap.querySelectorAll('.delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      try {
+        await fetch(`/api/locations/${parseInt(btn.dataset.id)}`, { method: 'DELETE' });
+        locations = locations.filter(l => l.id !== parseInt(btn.dataset.id));
+        render(); showToast('Точка удалена');
+      } catch (e) { showToast('Ошибка удаления'); }
+    });
+  });
+}
+
+document.getElementById('addBtn').addEventListener('click', async () => {
+  const name = document.getElementById('fName').value.trim();
+  const addr = document.getElementById('fAddr').value.trim();
+  const hours = document.getElementById('fHours').value.trim() || '09:00–22:00';
+  const wait = document.getElementById('fWait').value.trim() || '~10 мин';
+  const lat = parseFloat(document.getElementById('fLat').value);
+  const lng = parseFloat(document.getElementById('fLng').value);
+  if (!name || !addr) { showToast('Заполни название и адрес'); return; }
+  if (isNaN(lat) || isNaN(lng)) { showToast('Укажи координаты'); return; }
+  try {
+    const res = await fetch('/api/locations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, addr, hours, wait, lat, lng }) });
+    if (!res.ok) throw new Error();
+    const newLoc = await res.json();
+    locations.push(newLoc);
+    render(); showToast('Точка добавлена ✓');
+    ['fName','fAddr','fHours','fWait','fLat','fLng'].forEach(id => document.getElementById(id).value = '');
+  } catch (e) { showToast('Ошибка добавления точки'); }
+});
+
+document.getElementById('useMyLocation').addEventListener('click', () => {
+  if (!navigator.geolocation) { showToast('Геолокация не поддерживается'); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => { document.getElementById('fLat').value = pos.coords.latitude.toFixed(6); document.getElementById('fLng').value = pos.coords.longitude.toFixed(6); showToast('Координаты определены'); },
+    () => showToast('Не удалось получить геолокацию')
+  );
+});
+
+loadLocations();
+</script>
+</body>
+</html>
